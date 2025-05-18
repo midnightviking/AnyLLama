@@ -1,0 +1,11 @@
+{
+  "name": "anyllama",
+  "version": "0.1.0",
+  "description": "AnythingLLM + Ollama server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike Durbin",
+  "license": "ISC"
+}

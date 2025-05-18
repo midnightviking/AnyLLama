@@ -1,0 +1,51 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: Ollama
+    networks:
+      - ollamallms
+    build: /containers/ollama
+    ports:
+      - "11434:11434"
+      - "5100:5100"
+    volumes:
+      - LLMS:/root/.ollama
+      - ./containers/ollama:/app
+    # restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    ports:
+      - "3001:3001"
+    volumes:
+      - anythingllm-data:/app/server/storage
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - ollamallms
+    environment:
+      - STORAGE_DIR=/app/server/storage
+      - OLLAMA_BASE_URL=http://ollama:11434
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+networks:
+  ollamallms:
+    driver: bridge
+
+volumes:
+  LLMS:
+    name: ollamaLLM-storage
+  anythingllm-data:
+    name: anythingllm-data
+      

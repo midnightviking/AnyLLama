@@ -1,0 +1,24 @@
+models:
+  - name: 'llama3.1:latest'
+    prefix: 'ollama_chat'
+    port: '4101'
+
+  - name: 'llama3.2-vision'
+    prefix: 'ollama_chat'
+    port: '4102'
+
+  - name: 'phi3'
+    prefix: 'ollama_chat'
+    port: '4114'
+
+  - name: 'dolphin-llama3'
+    prefix: 'ollama_chat'
+    port: '4115'
+
+  - name: 'llama3:70b'
+    prefix: 'ollama_chat'
+    port: '4117'
+
+  - name: 'mistral'
+    prefix: 'ollama_chat'
+    port: '4103'

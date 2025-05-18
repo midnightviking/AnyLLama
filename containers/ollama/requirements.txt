@@ -1,0 +1,9 @@
+ollama
+openai
+pyyaml
+requests
+flask
+flask-socketio
+flask-cors
+click
+dotenv
