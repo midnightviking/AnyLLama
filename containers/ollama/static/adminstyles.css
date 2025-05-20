@@ -64,6 +64,13 @@ body {
   font-family: "Courier New", Courier, monospace;
   line-height: 1.8rem;
 }
+body a {
+  color: rgb(209, 204, 129);
+  text-decoration: none;
+}
+body a:hover {
+  text-decoration: underline;
+}
 
 h1, h2 {
   color: orangered;
@@ -200,14 +207,37 @@ button:hover {
 }
 .status-container ul .service {
   color: white;
-  background: rgba(200, 0, 0, 0.3);
+  background: rgba(225, 55, 55, 0.5);
 }
 .status-container ul .service.on {
   color: white;
-  background: rgba(0, 200, 0, 0.3);
+  background: rgba(0, 220, 0, 0.5);
 }
 .status-container ul .service .status {
   margin-left: 1rem;
+}
+
+.pull-container {
+  margin-top: 1rem;
+  padding: 1rem 0;
+  border-top: rgb(60, 84, 131) 1px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.pull-container .pull-button {
+  background: rgb(209, 204, 129);
+  color: #222;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  display: flex;
+}
+.pull-container input {
+  padding: 0.5rem 1rem;
 }
 
 /* ----------------------------------- */
