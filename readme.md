@@ -1,6 +1,6 @@
 # AnyLLama - Docker-based LLM Management System
 
-AnyLLama is a Docker-based system that provides an easy way to manage and serve Large Language Models (LLMs) using Ollama and AnythingLLM.
+AnyLLama is a Docker-based system that provides an easy way to manage and serve Large Language Models (LLMs) using Ollama and AnythingLLM. Very basic start for personal use. 
 
 ## Overview
 
@@ -39,7 +39,6 @@ This will start all three services:
    - In the interface, you can search for and select models like:
      - `llama3.2:1b` (small, fast model - good for testing)
      - `llama3.1:8b` (medium model - good balance of speed/quality)
-     - `codellama:7b` (specialized for code generation)
    - Click on Pull to start downloading it
    - The download progress will be displayed in real-time
 
