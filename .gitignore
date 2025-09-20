@@ -1,3 +1,5 @@
 .env
 node_modules
 __pycache__
+anythingllm-storage/*
+!anythingllm-storage/.env

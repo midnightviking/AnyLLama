@@ -24,7 +24,10 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - anythingllm-data:/app/server/storage
+      - ./anythingllm-storage:/app/server/storage
+      - ./anythingllm-storage/.env:/app/server/.env
+    cap_add:
+      - SYS_ADMIN
     depends_on:
       - ollama
     restart: unless-stopped
@@ -33,7 +36,6 @@ services:
     environment:
       - STORAGE_DIR=/app/server/storage
       - OLLAMA_BASE_URL=http://ollama:11434
-
     extra_hosts:
       - "host.docker.internal:host-gateway"
   model_selection:
@@ -52,6 +54,4 @@ networks:
 volumes:
   LLMS:
     name: ollamaLLM-storage
-  anythingllm-data:
-    name: anythingllm-data
       
