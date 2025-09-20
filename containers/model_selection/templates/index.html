@@ -68,7 +68,7 @@
 		      toastElement.style.display = 'none';
 		let   bread                      = true;
 
-
+		console.log(data);
 		//Socket connection
 		const socket = io();
 		socket.on('connect', () => {console.log('Connected to server');	});
@@ -182,6 +182,7 @@
 		//use this to create the initial list too so I can pivot to node from Flask
 		async function updateModels(_data = null) {
 			data = _data;
+			console.log(data);
 			if(!_data){
 				console.log('fetching models');
 				await fetch('/models')
@@ -236,8 +237,10 @@
 			updateModels();
 			//setup the selection button
 			document.getElementById('selectModel').addEventListener('click', (e) => {
-				var selectedModel = document.querySelector('input[name="model"]:checked').value;
-				addModel(selectedModel);
+				var selectedModel = document.querySelector('input[name="model"]:checked')?.value;
+				if(selectedModel){
+					addModel(selectedModel);
+				}
 			});
 
 			document.getElementById('pullModel').addEventListener('click', (e) => {

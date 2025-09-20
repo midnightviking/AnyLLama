@@ -75,14 +75,20 @@ class LLMAvailability:
 available_models = []
 
 def load_available_models():
-    req = requests.get("http://localhost:11434/api/tags")
-    if req.status_code == 200:
-        LLMAvailability.model_list.clear()
-        available_models.clear()
-        result = req.json()
-        local_models = result.get("models")
-        for m in local_models:
-            available_models.append(LLMAvailability(name=m.get("name"), prefix="ollama_chat"))
+    try:
+        req = requests.get("http://ollama:11434/api/tags")
+        if req.status_code == 200:
+            LLMAvailability.model_list.clear()
+            available_models.clear()
+            result = req.json()
+            local_models = result.get("models")
+            for m in local_models:
+                available_models.append(LLMAvailability(name=m.get("name"), prefix="ollama_chat"))
+    except requests.exceptions.ConnectionError as e:
+        print(f"Warning: Could not connect to Ollama service at http://ollama:11434: {e}")
+        print("Ollama service may not be running or may not be accessible.")
+    except Exception as e:
+        print(f"Error loading available models: {e}")
     
     return LLMAvailability.model_list
 
@@ -105,9 +111,19 @@ def get_download_status():
     if(len(available_models) == 0):
         load_available_models()
 
-    req = requests.get("http://localhost:11434/api/tags")
-    if(req.status_code == 200):
-        ollamaModelsInstalled = req.json()
+    try:
+        req = requests.get("http://ollama:11434/api/tags")
+        if(req.status_code == 200):
+            ollamaModelsInstalled = req.json()
+        else:
+            return available_models
+    except requests.exceptions.ConnectionError as e:
+        print(f"Warning: Could not connect to Ollama service at http://ollama:11434: {e}")
+        return available_models
+    except Exception as e:
+        print(f"Error getting download status: {e}")
+        return available_models
+        
     if not ollamaModelsInstalled:
         return available_models
 

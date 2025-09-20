@@ -4,36 +4,42 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request
 
 import requests as req
-import model_objectify
-from flask_socketio import SocketIO
-from model_objectify import LLMAvailability
+from model_objectify import get_available_models, get_models_json, get_download_status, get_model, set_model_running
+
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-
 # get the models setup
-model_objectify.get_available_models()
-availableModels = model_objectify.get_models_json()
+availableModels = get_models_json()
 mport = 5100 # just port for models that are missing a port in the config file
 data = {
     "models": availableModels,
-    "model_list": model_objectify.get_available_models(),
+    "model_list": get_available_models(),
     "selectedModel"  : None,
     "ollamaStatus"   : None,
     "ollamaAvailableModels": [{}] ,
 }
 
 async def getOllamaStatus():
-    res = req.get("http://localhost:11434/")
-    status = 0
-    if res.status_code == 200:
-        status = 1
-    data["ollamaStatus"] = status
-    # grab the status of the models too
-    model_objectify.get_download_status()
-    return status
-
+    try:
+        res = req.get("http://ollama:11434/")
+        status = 0
+        if res.status_code == 200:
+            status = 1
+        data["ollamaStatus"] = status
+        # grab the status of the models too
+        get_download_status()
+        return status
+    except req.exceptions.ConnectionError as e:
+        print(f"Warning: Could not connect to Ollama service: {e}")
+        data["ollamaStatus"] = 0
+        return 0
+    except Exception as e:
+        print(f"Error getting Ollama status: {e}")
+        data["ollamaStatus"] = 0
+        return 0
 
 #interface
 # Index
@@ -44,7 +50,7 @@ def index():
 # This route will be used to get the models
 @app.route("/models", methods=['GET'])
 def models():
-    data["models"] = model_objectify.get_models_json()    
+    data["models"] = get_models_json()    
     return  {"models": data["models"], "selectedModel": data["selectedModel"]}
 
 # This route will be used to select the model
@@ -59,7 +65,7 @@ def model():
     valid = False
     addToList = False
 
-    model = model_objectify.get_model(model_name)
+    model = get_model(model_name)
 
     if model is None: # download it if its not already installed    
         data["selectedModel"] = model_name
@@ -68,7 +74,7 @@ def model():
             "model": model_name
         }
         datam = json.dumps(_data)        
-        res = req.post("http://0.0.0.0:11434/api/pull",data=datam, stream=True)
+        res = req.post("http://ollama:11434/api/pull",data=datam, stream=True)
         
         #stream to socketio
         for chunk in res.iter_content(chunk_size=1024):
@@ -79,7 +85,7 @@ def model():
                 if("completed" in j and "total" in j ):
                     completed = str(round((j["completed"] / j["total"])*100)) + "%"
                 socketio.emit('model-download', {'data': j, "progress": completed, "model": model_name})
-        model = model_objectify.get_model(model_name=model_name, refresh=True )
+        model = get_model(model_name=model_name, refresh=True )
         addToList = True
         valid = True 
     else:
@@ -92,7 +98,7 @@ def model():
             model.set_port(str(mport))
             mport += 1
         # start the model proxy
-        model_objectify.set_model_running(model_name=model_name, running=True)
+        set_model_running(model_name=model_name, running=True)
         # anythingllm to be the provider    
         return {"name": model.get_name(), "valid": valid, "size": model.get_size(),
                 "port": model.get_port(), "running": model.get_running(), "addToList": addToList} 

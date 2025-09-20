@@ -1,16 +1,15 @@
 services:
   ollama:
-    image: ollama/ollama:latest
     container_name: Ollama
     networks:
       - ollamallms
-    build: /containers/ollama
+    image: ollama/ollama:latest
     ports:
       - "11434:11434"
-      - "5100:5100"
     volumes:
       - LLMS:/root/.ollama
-      - ./containers/ollama:/app
+      
+      # - ./containers/ollama:/app
     # restart: unless-stopped
     deploy:
       resources:
@@ -37,6 +36,13 @@ services:
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  model_selection:
+    build:
+      context: ./containers/model_selection
+    ports:
+      - 5100:5100
+    networks:
+      - ollamallms
 
 
 networks:
