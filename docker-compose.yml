@@ -1,3 +1,4 @@
+name: AnyLLaMa
 services:
   ollama:
     container_name: Ollama
@@ -8,9 +9,10 @@ services:
       - "11434:11434"
     volumes:
       - LLMS:/root/.ollama
-      
       # - ./containers/ollama:/app
     # restart: unless-stopped
+    environment:
+      - OLLAMA_CONTEXT_LENGTH=32768
     deploy:
       resources:
         reservations:
@@ -20,6 +22,7 @@ services:
               capabilities: [gpu]
 
   anythingllm:
+    container_name: AnythingLLM
     image: mintplexlabs/anythingllm:latest
     ports:
       - "3001:3001"
@@ -38,7 +41,9 @@ services:
       - OLLAMA_BASE_URL=http://ollama:11434
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   model_selection:
+    container_name: ModelSelection
     build:
       context: ./containers/model_selection
     ports:

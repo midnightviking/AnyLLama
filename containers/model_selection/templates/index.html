@@ -74,7 +74,7 @@
 		socket.on('connect', () => {console.log('Connected to server');	});
 
 		socket.on('model-download', (msg) => {
-			console.log('Model download:', msg);
+			// console.log('Model download:', msg);
 			const selectedModelElement = document.querySelector('.model-list li[data-model="' + msg.model + '"] ');
 			if(selectedModelElement === null){
 				const modelList = document.querySelector('.model-list');
